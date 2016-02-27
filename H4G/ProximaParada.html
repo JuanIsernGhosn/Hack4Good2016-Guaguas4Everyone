@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="styleProxPar.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        
+                <script>
+            
+        $(document).ready(function(){
+            function randomize(peq, gra) {
+                return Math.round(Math.random() * (gra - peq) + peq);
+            }
+            var i;
+            i = randomize(0,3);
+            if(i!=0){
+                document.getElementById("tl1").innerHTML = ""+i+"min.";
+            }else{
+                document.getElementById("tl1").innerHTML = ">>>";
+            }
+            document.getElementById("tl2").innerHTML = randomize(3,6)+"min.";
+            document.getElementById("tl3").innerHTML = randomize(6,12)+"min.";
+            var id_parada = window.location.search.substring(1);
+            var devolver = new Array("","","","","","");
+            var pos = 0;
+            document.getElementById("parada").innerHTML = "Parada "+id_parada;
+            id_parada = parseInt(id_parada)+1000;
+            id_parada = ""+id_parada;
+            $.getJSON("/guaguas_paradas.json",function(result){
+                for(i = 0; i < 807;i++){
+                    if(id_parada == result.resources[i].identifier){
+                        document.getElementById("nomParada").innerHTML = result.resources[i].nombre_parada;
+                        break;
+                    }            
+                }      
+
+
+            });
+            $.getJSON("/guaguas_detalle_paradas.json",function(result){
+                var p = 0;
+                var lineas_parada = new Array("","","");
+                for(i = 0; i < 2403;i++){
+                    if(id_parada == result.resources[i].num_parada){
+                        lineas_parada[p] = result.resources[i].linea_id;
+                        p++;
+                        if(p==3){
+                            break;
+                        }
+                    }            
+                }
+                $.getJSON("/guaguas_lineas.json",function(parsed_data){
+                    var j;
+                    for(j=0;j<3;j++){
+                        for(i = 0;i<112;i++){
+                            if(parsed_data.resources[i].identifier == lineas_parada[j]){
+                                devolver[pos]=parsed_data.resources[i].num_concesion;
+                                pos+=2;
+                                if(pos==6)break;
+                            }
+                       }
+                    }
+                    pos = 1;
+                    $.getJSON("/guaguas_lineas_parada.json",function(linea_data){
+                        var j;
+                        for(j=0;j<3;j++){
+                            for(i = 0;i<112;i++){
+                                if(linea_data.resources[i].identifier == lineas_parada[j]){
+                                    devolver[pos]=linea_data.resources[i].nombre_concesion;
+                                    pos+=2;
+                                    if(pos==7)break;
+                                }
+                           }
+                        }
+                        for(i=1; i < 6; i+=2){
+                            devolver[i] = devolver[i].split("(")[0];
+                        }
+                    document.getElementById("nl1").innerHTML = devolver[0];
+                    document.getElementById("noml1").innerHTML =devolver[1];
+                    document.getElementById("nl2").innerHTML = devolver[2];
+                    document.getElementById("noml2").innerHTML =devolver[3];
+                    document.getElementById("nl3").innerHTML = devolver[4];
+                    document.getElementById("noml3").innerHTML =devolver[5];
+                    if(devolver[1]==""){
+                        document.getElementById("nl1").removeChild;
+                        document.getElementById("noml1").remove();
+                        document.getElementById("pic1").remove();
+                        document.getElementById("tl1").remove();
+                    }
+                    if(devolver[3]==""){
+                        document.getElementById("nl2").remove();
+                        document.getElementById("tl2").remove();
+                        document.getElementById("noml2").remove();
+                    }
+                    if(devolver[5]==""){
+                        document.getElementById("nl3").remove;
+                        document.getElementById("tl3").remove();
+                        document.getElementById("noml3").remove();
+                        document.getElementById("pic3").remove();
+                    }
+
+                    });
+                });
+
+
+            });
+
+
+        });
+        </script>
+        
+        <script>
+            function changeImage() {
+                var image = document.getElementById('favimg');
+        if (image.src.match("RES/FAVORITO_RELLENO.png")) {
+            image.src = "RES/FAVORITO_CONTORNO.png";
+        } else {
+            image.src = "RES/FAVORITO_RELLENO.png";
+        }
+    }
+</script>
+        
+    </head>
+    <body>
+       
+        <div class="header">
+            <a href="index.html">
+                <img src="RES/HeaderParada.jpeg"/>
+            </a>
+        </div>
+        <div class="cuerpo">
+            <div class="proxText">
+                <p>Próxima parada</p>
+            </div>
+            <div class="recuadroParadas">
+                <div class="linea" id="linea1">
+                    <div class="row" id="r1">
+                        <div class="colu" id="colu1">
+                            <p id="nl1"></p>
+                        </div>
+                        <div class="colu" id="colu2">
+                            <p id="noml1"></p>
+                        </div>
+                        <div class="colu" id="colu3">
+                        </div>
+                    </div>
+                    <div class="row" id="r2">
+                        <div class="colu" id="colu1">
+                        </div>
+                        <div class="colu" id="colu22">
+                            <img src="RES/PICTOGRAMA_SILLA_OCUPADA.png" id="pic1"/>
+                        </div>
+                        <div class="colu" id="colu33">
+                            <p id="tl1"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="linea" id="linea2">
+                    <div class="row" id="r1">
+                        <div class="colu" id="colu1">
+                            <p id="nl2"></p>
+                        </div>
+                        <div class="colu" id="colu2">
+                            <p id="noml2"></p>
+                        </div>
+                        <div class="colu" id="colu3">
+                        </div>
+                    </div>
+                    <div class="row" id="r2">
+                        <div class="colu" id="colu1">
+                        </div>
+                        <div class="colu" id="colu22">
+                        </div>
+                        <div class="colu" id="colu33">
+                            <p id="tl2"></p>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="linea" id="linea3">
+                    <div class="row" id="r1">
+                        <div class="colu" id="colu1">
+                            <p id="nl3"></p>
+                        </div>
+                        <div class="colu" id="colu2">
+                            <p id="noml3"></p>
+                        </div>
+                        <div class="colu" id="colu3">
+                        </div>
+                    </div>
+                    <div class="row" id="r2">
+                        <div class="colu" id="colu1">
+                        </div>
+                        <div class="colu" id="colu22">
+                            <img src="RES/PICTOGRAMA_SILLA_RUEDA.png" id="pic3"/>
+                        </div>
+                        <div class="colu" id="colu33">
+                            <p id="tl3"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="linea" id="linea4"></div>
+            </div>
+            <div class="proxText">
+                <p>Mostrando todas las líneas</p>
+            </div>
+            <div class="favs">
+                <p id="parada"></p>
+                <div class="separator"></div>
+                <div class="Nombreparada">
+                    <p id="nomParada"></p>
+                </div>
+                <div class="images">
+                    <div class="favCol" id="favIm">
+                        <img src="RES/AVISO_ACCESIBLE.png"/>
+                    </div>
+                    
+                    <div class="favCol" id="sello">
+                        <img id="favimg" src="RES/FAVORITO_RELLENO.png" onclick="changeImage()"/>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+    
+
+    </body>
+</html>

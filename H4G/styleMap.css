@@ -1,0 +1,32 @@
+*{
+    padding: 0px;
+    margin: 0px;
+    font-size: 15px;
+    font-family: MyriadPro;
+}
+
+body{
+    background-color: #ececec;
+}
+
+.header{
+    width: 100%;
+}
+
+.header img{
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.cuerpo img{
+    width: 100%;
+    display: block;
+    margin-bottom: 5px;
+}
+
+
+@font-face { 
+    font-family: MyriadPro; 
+    src: url('MyriadPro-Semibold.otf');
+}
